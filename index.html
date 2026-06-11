@@ -187,6 +187,8 @@
   .info h2 { margin: 0 0 10px; font-size: 18px; }
   .info ul { margin: 0; padding-left: 20px; }
   .info li { margin-bottom: 7px; font-size: 14.5px; color: #3c3c40; }
+  .info.note { margin-top: 16px; background: #fffaf2; border-color: #f0e2c9; }
+  .info.note p { margin: 0 0 10px; font-size: 14.5px; color: #3c3c40; }
 
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -245,6 +247,15 @@
         <li><strong>Attach reference files</strong> by uploading them. Browsers only expose the file name, so the generated prompt asks the model to locate each file by searching for it by name.</li>
         <li><strong>Copy</strong> grabs the assembled prompt; <strong>Reset</strong> clears the form.</li>
         <li><strong>Runs entirely in your browser.</strong> No API calls, no accounts, nothing sent anywhere — it just assembles text. Free to use and share.</li>
+      </ul>
+    </div>
+
+    <div class="info note">
+      <h2>📎 A note about uploaded files</h2>
+      <p>This tool only reads the <strong>names</strong> of files you attach — never their contents or their location on your computer (browsers don't allow that). What you actually get is a prompt that <em>references</em> those files by name. What happens next depends on where you paste it:</p>
+      <ul>
+        <li><strong>In a regular chat (Claude.ai, Gemini, ChatGPT, etc.):</strong> the assistant can't reach into your computer, so when you send the prompt it will likely ask you to attach the files again. Just upload them from your machine at that point.</li>
+        <li><strong>In an agent system connected to your machine (Claude Code, Codex, and similar):</strong> it can act on the instruction and go search your machine for each file by name and read it for you — no re-uploading needed.</li>
       </ul>
     </div>
   </section>
