@@ -206,6 +206,10 @@
   .reset { background: transparent; color: var(--muted); border: 1px solid transparent; }
   .vhead .reset { margin-left: auto; align-self: center; border: 1px solid var(--line); padding: 7px 14px; font-size: 13.5px; border-radius: 9px; }
   .vhead .reset:hover { background: #eef0f3; color: var(--ink); }
+  .examples-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 18px; }
+  .ex-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .ex-pill { font-family: inherit; font-size: 13px; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; cursor: pointer; transition: background .12s ease; }
+  .ex-pill:hover { background: #eef0f3; }
 
   /* ---------- Landing ---------- */
   .hero h1 { font-size: 38px; margin: 0 0 8px; letter-spacing: -0.6px; }
@@ -308,6 +312,7 @@
     <div class="panel" data-prefix="claude">
       <div class="vhead"><span class="glyph">✳</span><h1>Claude Prompt Generator</h1><button type="button" class="act reset">Reset</button></div>
       <p class="vsub">Structured around Anthropic's official prompt-engineering guidance — a clear role, XML-tagged context and documents, examples, optional chain-of-thought, and explicit output formatting.</p>
+      <div class="examples-row"><span class="ex-label">Need a starting point? Try:</span></div>
       <div class="card" style="--bar:#e8533a">
         <span class="label">Role &amp; tone</span>
         <p class="hint">Give Claude a role via the system framing, and optionally set the tone. (Anthropic: assign a role; it sharpens responses.)</p>
@@ -380,6 +385,7 @@
     <div class="panel" data-prefix="gemini">
       <div class="vhead"><span class="glyph">✦</span><h1>Gemini Prompt Generator</h1><button type="button" class="act reset">Reset</button></div>
       <p class="vsub">Built around Google's Persona · Task · Context · Format framework. Fill in what's relevant, then copy.</p>
+      <div class="examples-row"><span class="ex-label">Need a starting point? Try:</span></div>
       <div class="card" style="--bar:#4285F4">
         <span class="label">Persona <span class="opt">optional</span></span>
         <p class="hint">The role or expertise you want Gemini to adopt.</p>
@@ -445,6 +451,7 @@
     <div class="panel" data-prefix="chatgpt">
       <div class="vhead"><span class="glyph"><svg class="oai-logo" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="OpenAI"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.0201 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.1419.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg></span><h1>ChatGPT Prompt Generator</h1><button type="button" class="act reset">Reset</button></div>
       <p class="vsub">Built around OpenAI's guidance — clear instructions, grounding reference text, steps, examples, and format.</p>
+      <div class="examples-row"><span class="ex-label">Need a starting point? Try:</span></div>
       <div class="card" style="--bar:#10A37F">
         <span class="label">Role <span class="opt">optional</span></span>
         <p class="hint">A persona / system role for the model to adopt.</p>
@@ -673,6 +680,156 @@
     fr.appendChild(row);
   }
 
+  /* ---------------- Example presets (quick-start roles) ---------------- */
+  const EXAMPLES = {
+    claude: {
+      designer: {
+        role: "a senior UX writer for a fintech product",
+        tone: "friendly and reassuring",
+        background: "We're designing the dashboard for a mobile budgeting app aimed at people new to managing money.",
+        instructions: "Write microcopy for three states: an empty dashboard (no accounts linked yet), a sync error, and a successful first budget. Keep each under 12 words and avoid finance jargon.",
+        request: "Write the three pieces of microcopy now.",
+        format: "a labeled list — one line per state, with the state name in bold"
+      },
+      business: {
+        role: "a warm, plain-spoken marketing copywriter for a small neighborhood coffee shop",
+        tone: "warm and casual",
+        background: "We just launched online ordering for pickup and want to tell our regulars.",
+        instructions: "Write a short announcement email. Say online ordering is live and offer 10% off the first online order with code BREW10. Keep one clear call to action.",
+        request: "Draft the email.",
+        format: "a ~150-word email with a subject line and a single call-to-action"
+      },
+      comms: {
+        role: "a corporate communications lead",
+        tone: "clear and upbeat",
+        background: "Rough notes for a new hybrid work policy: in-office Monday–Wednesday, remote Thursday–Friday; starts the 1st of next month; new $50/month home-office stipend; team leads can grant exceptions.",
+        instructions: "Turn the notes into a company-wide announcement. Be positive and concrete, and don't invent details beyond the notes.",
+        request: "Write the announcement.",
+        format: "a headline plus three short sections: What's changing, When, and What you get"
+      },
+      engineer: {
+        role: "a senior backend engineer doing a code review",
+        tone: "direct and concise",
+        background: "Reviewing a small utility function from a teammate's pull request:\n\ndef average(nums):\n    return sum(nums) / len(nums)",
+        instructions: "Review the function for correctness bugs and edge cases only — no style nits. Consider empty input, non-numeric values, and very large lists.",
+        request: "List any bugs you find.",
+        think: true,
+        format: "a table with columns: issue, why it matters, severity",
+        prefill: "| Issue | Why it matters | Severity |"
+      },
+      admin: {
+        role: "an experienced executive assistant",
+        tone: "organized and practical",
+        background: "A new marketing coordinator starts Monday and I need a first-week onboarding plan.",
+        instructions: "Create a first-week onboarding checklist covering accounts and access, intro meetings, tools to set up, and one small starter task. Keep it skimmable.",
+        request: "Create the checklist.",
+        format: "a checklist grouped by day (Mon–Fri), each item with a checkbox"
+      }
+    },
+    gemini: {
+      designer: {
+        persona: "a senior UX writer for a fintech product",
+        task: "Write empty-state, error, and success microcopy for a mobile budgeting app's dashboard",
+        audience: "first-time users who are new to managing money",
+        context: "Keep each line short and free of finance jargon; the app should feel friendly and reassuring.",
+        format: "a labeled list, one line per state",
+        tone: "friendly and reassuring",
+        length: "each line under 12 words"
+      },
+      business: {
+        persona: "a warm, plain-spoken copywriter for a small neighborhood coffee shop",
+        task: "Draft a customer email announcing that online ordering for pickup is now live, with 10% off the first order using code BREW10",
+        audience: "existing local regulars",
+        context: "Friendly small business; we want one clear call to action.",
+        format: "an email with a subject line and a single call to action",
+        tone: "warm and casual",
+        length: "about 150 words"
+      },
+      comms: {
+        persona: "a corporate communications lead",
+        task: "Turn the notes below into an upbeat company-wide announcement about our new hybrid work policy",
+        audience: "all employees",
+        context: "Be positive and concrete; don't add any details beyond the notes.",
+        source: "In-office Monday–Wednesday, remote Thursday–Friday. Starts the 1st of next month. New $50/month home-office stipend. Team leads can grant exceptions.",
+        format: "a headline plus three short sections: What's changing, When, What you get",
+        tone: "clear and upbeat",
+        length: "under 250 words"
+      },
+      engineer: {
+        persona: "a senior backend engineer doing a code review",
+        task: "Review the function in the source for correctness bugs and edge cases — no style nits",
+        context: "Consider empty input, non-numeric values, and very large lists.",
+        source: "def average(nums):\n    return sum(nums) / len(nums)",
+        format: "a table: issue, why it matters, severity",
+        tone: "direct and concise"
+      },
+      admin: {
+        persona: "an experienced executive assistant",
+        task: "Create a first-week onboarding checklist for a new marketing coordinator",
+        context: "Cover accounts and access, intro meetings, tools to set up, and one small starter task. Keep it skimmable.",
+        format: "a checklist grouped by day (Mon–Fri) with checkboxes",
+        tone: "organized and practical"
+      }
+    },
+    chatgpt: {
+      designer: {
+        role: "a senior UX writer for a fintech product",
+        task: "Write empty-state, error, and success microcopy for a mobile budgeting app's dashboard",
+        audience: "first-time users new to managing money",
+        context: "Friendly, reassuring, and free of finance jargon.",
+        format: "a labeled list, one line per state",
+        length: "each line under 12 words",
+        tone: "friendly and reassuring"
+      },
+      business: {
+        role: "a warm, plain-spoken copywriter for a small coffee shop",
+        task: "Draft a customer email announcing online ordering is live, with 10% off the first order using code BREW10",
+        audience: "existing local regulars",
+        context: "Keep one clear call to action.",
+        format: "an email with a subject line and one call to action",
+        length: "about 150 words",
+        tone: "warm and casual"
+      },
+      comms: {
+        role: "a corporate communications lead",
+        task: "Turn the reference notes into an upbeat company-wide announcement about our new hybrid work policy",
+        audience: "all employees",
+        context: "Stay positive and concrete; don't add anything beyond the notes.",
+        source: "In-office Monday–Wednesday, remote Thursday–Friday. Starts the 1st of next month. New $50/month home-office stipend. Team leads can grant exceptions.",
+        format: "a headline plus three short sections: What's changing, When, What you get",
+        length: "under 250 words",
+        tone: "clear and upbeat"
+      },
+      engineer: {
+        role: "a senior backend engineer doing a code review",
+        task: "Review the function in the reference for correctness bugs and edge cases — no style nits",
+        context: "Consider empty input, non-numeric values, and very large lists.",
+        source: "def average(nums):\n    return sum(nums) / len(nums)",
+        steps: "1. Identify the failure cases. 2. Note the impact of each. 3. Suggest a fix.",
+        format: "a table: issue, why it matters, severity",
+        tone: "direct and concise"
+      },
+      admin: {
+        role: "an experienced executive assistant",
+        task: "Create a first-week onboarding checklist for a new marketing coordinator",
+        context: "Cover accounts and access, intro meetings, tools to set up, and one small starter task. Keep it skimmable.",
+        format: "a checklist grouped by day (Mon–Fri) with checkboxes",
+        tone: "organized and practical"
+      }
+    }
+  };
+  const EX_ORDER = [["designer","Designer"],["business","Business owner"],["comms","Comms lead"],["engineer","Engineer"],["admin","Admin"]];
+  function applyPreset(panel, preset) {
+    panel.querySelectorAll("[data-field]").forEach(e => { if (e.type === "checkbox") e.checked = false; else if (e.tagName === "SELECT") e.selectedIndex = 0; else e.value = ""; });
+    const fr = panel.querySelector(".file-rows"); if (fr) { fr.innerHTML = ""; refreshEmptyNote(fr); }
+    Object.entries(preset).forEach(([k, val]) => {
+      const elx = panel.querySelector(`[data-field="${k}"]`);
+      if (!elx) return;
+      if (elx.type === "checkbox") elx.checked = !!val; else elx.value = val;
+    });
+    renderPanel(panel);
+  }
+
   document.querySelectorAll(".panel[data-prefix]").forEach(panel => {
     panel.querySelectorAll("[data-field]").forEach(e => {
       e.addEventListener("input", () => renderPanel(panel));
@@ -698,6 +855,18 @@
       if (fr) { fr.innerHTML = ""; refreshEmptyNote(fr); }
       renderPanel(panel); toast("Cleared");
     }));
+    const prefix = panel.dataset.prefix;
+    const exRow = panel.querySelector(".examples-row");
+    if (exRow && EXAMPLES[prefix]) {
+      EX_ORDER.forEach(([key, label]) => {
+        const preset = EXAMPLES[prefix][key];
+        if (!preset) return;
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "ex-pill"; b.textContent = label;
+        b.addEventListener("click", () => { applyPreset(panel, preset); toast(label + " example loaded"); });
+        exRow.appendChild(b);
+      });
+    }
     renderPanel(panel);
   });
 
