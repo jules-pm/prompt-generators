@@ -19,7 +19,7 @@ Open `index.html` in any browser. No build step, no install, no server.
 
 ## Privacy & cost
 
-Everything runs entirely in your browser. It makes no API calls, requires no accounts, and sends nothing anywhere — it just assembles text. Free to use and share.
+Everything you type runs entirely in your browser — your inputs and files never leave your device, and the tool makes no API calls and requires no accounts. The site uses Cloudflare Web Analytics, a privacy-friendly, cookieless service that counts pageviews only (no personal data). Free to use and share.
 
 ## License
 
