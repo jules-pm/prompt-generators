@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Generators — Claude · Gemini · ChatGPT</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --ink: #1f1f23;
+    --muted: #5f6368;
+    --line: #e3e6ec;
+    /* brand */
+    --claude: #d9694a;
+    --gemini: #4285F4;
+    --chatgpt: #10A37F;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  a { color: inherit; }
+
+  /* ---------- Top nav ---------- */
+  nav.top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 18px;
+    flex-wrap: wrap;
+  }
+  nav.top .brand {
+    font-weight: 700;
+    font-size: 16px;
+    margin-right: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+  }
+  nav.top .brand .sp {
+    background: linear-gradient(120deg, var(--claude), var(--gemini), var(--chatgpt));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tab {
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 9px;
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+  }
+  .tab:hover { background: #eef0f3; }
+  .tab.active { color: var(--ink); }
+  .tab[data-tab="home"].active { border-color: #888; }
+  .tab[data-tab="claude"].active { color: var(--claude); border-color: var(--claude); }
+  .tab[data-tab="gemini"].active { color: var(--gemini); border-color: var(--gemini); }
+  .tab[data-tab="chatgpt"].active { color: var(--chatgpt); border-color: var(--chatgpt); }
+
+  /* ---------- Views ---------- */
+  .wrap { max-width: 840px; margin: 0 auto; padding: 30px 16px 90px; }
+  .view { display: none; }
+  .view.show { display: block; }
+
+  /* ---------- Headers ---------- */
+  .vhead { display: flex; align-items: center; gap: 13px; margin-bottom: 4px; }
+  .vhead .glyph { font-size: 32px; line-height: 1; }
+  .vhead h1 { font-size: 32px; margin: 0; font-weight: 600; letter-spacing: -0.5px; }
+  .vhead .byline { font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 8px; }
+  .vsub { color: var(--muted); margin: 0 0 26px 45px; font-size: 15px; }
+
+  .view[data-view="claude"] .vhead h1 { font-family: Georgia, "Times New Roman", serif; }
+  .view[data-view="claude"] .vhead .glyph { color: var(--claude); }
+  .view[data-view="gemini"] .vhead h1,
+  .view[data-view="gemini"] .vhead .glyph {
+    background: linear-gradient(90deg, var(--gemini), #9334E6, #D96570);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .view[data-view="chatgpt"] .vhead .glyph { color: var(--chatgpt); }
+  .view[data-view="chatgpt"] .vhead h1 { color: #0d8a6a; }
+
+  /* per-view accent for buttons/uploads */
+  .view[data-view="claude"]  { --accent: var(--claude);  --grad: #d9694a; }
+  .view[data-view="gemini"]  { --accent: var(--gemini);  --grad: linear-gradient(120deg,#4285F4,#9334E6,#D96570); }
+  .view[data-view="chatgpt"] { --accent: var(--chatgpt); --grad: linear-gradient(120deg,#10A37F,#19C37D); }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 18px; bottom: 18px;
+    width: 5px; border-radius: 4px;
+    background: var(--bar, var(--accent));
+  }
+  .card .label { display: inline-block; font-size: 21px; font-weight: 600; margin: 0 0 2px 12px; color: var(--bar, var(--ink)); }
+  .view[data-view="claude"] .card .label { font-family: Georgia, serif; font-size: 22px; }
+  .card .label .opt { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-left: 6px; }
+  .card .hint { margin: 2px 0 14px 12px; color: var(--muted); font-size: 13.5px; }
+  .fields { margin-left: 12px; }
+  label.field { display: block; margin-bottom: 12px; }
+  label.field .k { display: block; font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 5px; }
+  input[type="text"], textarea, select {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px;
+    font-size: 14.5px; font-family: inherit; color: var(--ink); background: #fafbfc; resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); background: #fff;
+  }
+  textarea { min-height: 60px; }
+
+  /* file rows */
+  .file-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .file-row .path { flex: 1 1 40%; }
+  .file-row .desc { flex: 1 1 60%; }
+  .file-row .rm {
+    flex: 0 0 auto; background: #f1f1f3; color: var(--accent);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; font-size: 16px; line-height: 1; cursor: pointer;
+  }
+  .file-actions { display: flex; gap: 10px; margin-top: 6px; }
+  .upload-btn {
+    display: inline-block; background: var(--grad); color: #fff; font-size: 14.5px; font-weight: 600;
+    border-radius: 10px; padding: 11px 20px; cursor: pointer;
+  }
+  .add-row { padding: 11px 18px; }
+  .empty-note { color: var(--muted); font-size: 13.5px; font-style: italic; margin: 0 0 10px; }
+
+  /* ---------- Output ---------- */
+  .output-card { background: #16171c; border: none; }
+  .output-card::before { background: var(--grad); }
+  .output-card .label { color: #fff; }
+  .view[data-view="claude"] .output-card .label { font-family: Georgia, serif; }
+  .output-card .hint { color: #aeb3bd; }
+  .gen-output {
+    margin: 4px 0 0 12px; white-space: pre-wrap; word-wrap: break-word;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13.5px; line-height: 1.6; color: #eef0f4; background: #21232b;
+    border-radius: 10px; padding: 16px 18px; max-height: 460px; overflow-y: auto;
+  }
+  .gen-output .placeholder { color: #7a7f8a; font-style: italic; }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar { position: sticky; bottom: 0; display: flex; gap: 10px; justify-content: flex-end; padding: 14px 0 4px; }
+  button.act { font-family: inherit; font-size: 14.5px; font-weight: 600; border: none; border-radius: 10px; padding: 11px 20px; cursor: pointer; transition: transform .05s ease; }
+  button.act:active { transform: translateY(1px); }
+  .copy { background: var(--grad); color: #fff; }
+  .reset { background: transparent; color: var(--muted); border: 1px solid transparent; }
+
+  /* ---------- Landing ---------- */
+  .hero h1 { font-size: 38px; margin: 0 0 8px; letter-spacing: -0.6px; }
+  .hero h1 .grad { background: linear-gradient(90deg, var(--claude), var(--gemini), var(--chatgpt)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p.lead { font-size: 17px; color: #3c3c40; margin: 0 0 6px; max-width: 640px; }
+  .hero p.byline { color: var(--muted); font-size: 14px; margin: 0 0 30px; }
+  .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 34px; }
+  .tool {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+    cursor: pointer; transition: transform .08s ease, box-shadow .15s ease; border-top: 4px solid var(--tc);
+  }
+  .tool:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.08); }
+  .tool h3 { margin: 0 0 6px; font-size: 19px; display: flex; align-items: center; gap: 8px; }
+  .tool h3 .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--tc); display: inline-block; }
+  .tool .frame { font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--tc); margin-bottom: 8px; }
+  .tool p { margin: 0 0 14px; font-size: 14px; color: #46474c; }
+  .tool .open { font-size: 14px; font-weight: 600; color: var(--tc); }
+  .info { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; }
+  .info h2 { margin: 0 0 10px; font-size: 18px; }
+  .info ul { margin: 0; padding-left: 20px; }
+  .info li { margin-bottom: 7px; font-size: 14.5px; color: #3c3c40; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 30;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <span class="brand" data-tab="home"><span class="sp">✦</span> Prompt Generators</span>
+  <button class="tab" data-tab="home">Home</button>
+  <button class="tab" data-tab="claude">Claude</button>
+  <button class="tab" data-tab="gemini">Gemini</button>
+  <button class="tab" data-tab="chatgpt">ChatGPT</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===================== HOME ===================== -->
+  <section class="view" data-view="home">
+    <div class="hero">
+      <h1>Better prompts for <span class="grad">every model</span></h1>
+      <p class="lead">Three guided prompt builders — one for Claude, one for Gemini, one for ChatGPT — each shaped around that model's own prompting best practices. Fill in the fields, watch your prompt assemble live, and copy it out.</p>
+      <p class="byline">by Jules</p>
+    </div>
+
+    <div class="tool-grid">
+      <div class="tool" style="--tc: var(--claude)" data-goto="claude">
+        <div class="frame">Anatomy-of-a-prompt</div>
+        <h3><span class="dot"></span> Claude</h3>
+        <p>A 10-part operating brief — task, context files, scope, delegation, evidence, and how you want the report. Built for agentic, hands-on work.</p>
+        <div class="open">Open Claude builder →</div>
+      </div>
+      <div class="tool" style="--tc: var(--gemini)" data-goto="gemini">
+        <div class="frame">Persona · Task · Context · Format</div>
+        <h3><span class="dot"></span> Gemini</h3>
+        <p>Google's recommended framework, written conversationally. Persona, task, context, reference material, few-shot examples, and format.</p>
+        <div class="open">Open Gemini builder →</div>
+      </div>
+      <div class="tool" style="--tc: var(--chatgpt)" data-goto="chatgpt">
+        <div class="frame">Role · Task · Reference · Steps</div>
+        <h3><span class="dot"></span> ChatGPT</h3>
+        <p>OpenAI's guidance: clear instructions, grounding reference text, step-by-step breakdown, examples, and a specified output format.</p>
+        <div class="open">Open ChatGPT builder →</div>
+      </div>
+    </div>
+
+    <div class="info">
+      <h2>How it works</h2>
+      <ul>
+        <li><strong>Pick a model tab</strong> and fill in the sections that apply — optional ones are labeled, so a quick prompt can skip them.</li>
+        <li><strong>Each builder follows that model's best practices</strong>, so the same idea gets shaped differently for Claude, Gemini, and ChatGPT.</li>
+        <li><strong>Attach reference files</strong> by uploading them. Browsers only expose the file name, so the generated prompt asks the model to locate each file by searching for it by name.</li>
+        <li><strong>Copy</strong> grabs the assembled prompt; <strong>Reset</strong> clears the form.</li>
+        <li><strong>Runs entirely in your browser.</strong> No API calls, no accounts, nothing sent anywhere — it just assembles text. Free to use and share.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== CLAUDE ===================== -->
+  <section class="view" data-view="claude">
+    <div class="panel" data-prefix="claude">
+      <div class="vhead"><span class="glyph">✳</span><h1>Claude Prompt Generator</h1></div>
+      <p class="vsub">The anatomy of a Claude prompt — fill in each section, then copy the assembled brief.</p>
+
+      <div class="card" style="--bar:#e8533a">
+        <span class="label">Task</span>
+        <p class="hint">What you're working on, who it's for, and the specific ask.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Larger goal</span><input type="text" data-field="goal" placeholder="e.g. shipping an onboarding flow"></label>
+          <label class="field"><span class="k">Who it's for</span><input type="text" data-field="who" placeholder="e.g. first-time mobile users"></label>
+          <label class="field"><span class="k">What the output enables</span><input type="text" data-field="enables" placeholder="e.g. a working signup screen they can test"></label>
+          <label class="field"><span class="k">The task</span><textarea data-field="task" placeholder="e.g. build the signup form with validation"></textarea></label>
+        </div>
+      </div>
+
+      <div class="card" style="--bar:#4ca3d8">
+        <span class="label">Context Files</span>
+        <p class="hint">Files to read completely before responding. Upload to grab names, then edit the path and say what each contains.</p>
+        <div class="fields">
+          <div class="file-rows"></div>
+          <div class="file-actions">
+            <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
+            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="--bar:#2bb583">
+        <span class="label">Reference</span>
+        <p class="hint">A reference for what you want to achieve.</p>
+        <div class="fields"><label class="field"><span class="k">Reference (paste or describe)</span><textarea data-field="reference" placeholder="Paste a reference example, or describe the target"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#e8b53a">
+        <span class="label">Effort</span>
+        <p class="hint">Scope it like it's at the top of your range — don't undersell.</p>
+        <div class="fields"><label class="field"><span class="k">Difficulty</span>
+          <select data-field="effort"><option value="routine">Routine</option><option value="hard">Hard</option><option value="hardest-unsolved">Hardest-unsolved</option></select></label></div>
+      </div>
+
+      <div class="card" style="--bar:#f2a9b8">
+        <span class="label">Act</span>
+        <p class="hint">When you have enough info to act, act. Don't re-litigate decisions or survey options you won't pursue.</p>
+        <div class="fields"><label class="field"><span class="k">Decisions already made (don't re-derive)</span><textarea data-field="decided" placeholder="e.g. we're using React + Tailwind; auth is already built"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#b58fe0">
+        <span class="label">Scope</span>
+        <p class="hint">Do the simplest thing that works well. No extra features, refactors, or abstractions.</p>
+        <div class="fields"><label class="field"><span class="k">Constraints / out of scope</span><textarea data-field="scope" placeholder="e.g. no new dependencies; don't touch the styling"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#e8533a">
+        <span class="label">Delegate</span>
+        <p class="hint">Split independent subtasks across subagents. Verify with a fresh-context subagent against the spec.</p>
+        <div class="fields"><label class="field"><span class="k">Verify interval</span><input type="text" data-field="interval" placeholder="e.g. every major milestone"></label></div>
+      </div>
+
+      <div class="card" style="--bar:#4ca3d8">
+        <span class="label">Evidence</span>
+        <p class="hint">Before reporting progress, audit every claim against a tool result. Unverified? Say so. (Always included.)</p>
+      </div>
+
+      <div class="card" style="--bar:#2bb583">
+        <span class="label">Memory</span>
+        <p class="hint">Record lessons — one per file, one-line summary. Update, don't duplicate.</p>
+        <div class="fields"><label class="field"><span class="k">Notes file</span><input type="text" data-field="notes" placeholder="e.g. notes.md"></label></div>
+      </div>
+
+      <div class="card" style="--bar:#e8b53a">
+        <span class="label">Checkpoint</span>
+        <p class="hint">Pause only for: destructive actions, real scope changes, or input only you can provide. (Always included.)</p>
+      </div>
+
+      <div class="card" style="--bar:#f2a9b8">
+        <span class="label">Report</span>
+        <p class="hint">Open with the outcome — the TLDR. Complete sentences. Clear beats short. (Always included.)</p>
+      </div>
+
+      <div class="card output-card">
+        <span class="label">✦ Your assembled prompt</span>
+        <p class="hint">Updates live as you type.</p>
+        <div class="gen-output"><span class="placeholder">Start filling in the fields above…</span></div>
+      </div>
+      <div class="toolbar"><button class="act reset">Reset</button><button class="act copy">Copy prompt</button></div>
+    </div>
+  </section>
+
+  <!-- ===================== GEMINI ===================== -->
+  <section class="view" data-view="gemini">
+    <div class="panel" data-prefix="gemini">
+      <div class="vhead"><span class="glyph">✦</span><h1>Gemini Prompt Generator</h1></div>
+      <p class="vsub">Built around Google's Persona · Task · Context · Format framework. Fill in what's relevant, then copy.</p>
+
+      <div class="card" style="--bar:#4285F4">
+        <span class="label">Persona <span class="opt">optional</span></span>
+        <p class="hint">The role or expertise you want Gemini to adopt.</p>
+        <div class="fields"><label class="field"><span class="k">Act as…</span><input type="text" data-field="persona" placeholder="e.g. a senior UX writer with a friendly, plain-language style"></label></div>
+      </div>
+
+      <div class="card" style="--bar:#9334E6">
+        <span class="label">Task</span>
+        <p class="hint">The main thing you want — lead with a verb (Summarize, Draft, Compare, Generate…).</p>
+        <div class="fields"><label class="field"><span class="k">What should Gemini do?</span><textarea data-field="task" placeholder="e.g. Draft a 200-word welcome email for new users of our budgeting app"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#34A853">
+        <span class="label">Context</span>
+        <p class="hint">Background, the audience, and the purpose.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Audience</span><input type="text" data-field="audience" placeholder="e.g. first-time users, ages 25–40, not finance-savvy"></label>
+          <label class="field"><span class="k">Background / purpose</span><textarea data-field="context" placeholder="e.g. We just launched; goal is to get them to connect a bank account in week one"></textarea></label>
+        </div>
+      </div>
+
+      <div class="card" style="--bar:#12B5CB">
+        <span class="label">Reference material <span class="opt">optional</span></span>
+        <p class="hint">Documents or data to work from. Paste text, or upload files and edit the path.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Paste source text (optional)</span><textarea data-field="source" placeholder="Paste any text Gemini should work from directly"></textarea></label>
+          <div class="file-rows"></div>
+          <div class="file-actions">
+            <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
+            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="--bar:#EA4335">
+        <span class="label">Examples <span class="opt">optional</span></span>
+        <p class="hint">Show 1–3 examples of the output you want (few-shot). One of the highest-leverage things you can add.</p>
+        <div class="fields"><label class="field"><span class="k">Example output(s)</span><textarea data-field="examples" placeholder="Example 1: …&#10;Example 2: …"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#F9AB00">
+        <span class="label">Format &amp; tone</span>
+        <p class="hint">The shape, length, and voice of the output.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Output format</span><input type="text" data-field="format" placeholder="e.g. a bulleted list / a table / a 200-word email"></label>
+          <label class="field"><span class="k">Tone / voice</span><input type="text" data-field="tone" placeholder="e.g. warm and encouraging, no jargon"></label>
+          <label class="field"><span class="k">Length / constraints</span><input type="text" data-field="length" placeholder="e.g. under 150 words; avoid exclamation points"></label>
+        </div>
+      </div>
+
+      <div class="card output-card">
+        <span class="label">✦ Your assembled prompt</span>
+        <p class="hint">Updates live as you type.</p>
+        <div class="gen-output"><span class="placeholder">Start filling in the fields above…</span></div>
+      </div>
+      <div class="toolbar"><button class="act reset">Reset</button><button class="act copy">Copy prompt</button></div>
+    </div>
+  </section>
+
+  <!-- ===================== CHATGPT ===================== -->
+  <section class="view" data-view="chatgpt">
+    <div class="panel" data-prefix="chatgpt">
+      <div class="vhead"><span class="glyph">◎</span><h1>ChatGPT Prompt Generator</h1></div>
+      <p class="vsub">Built around OpenAI's guidance — clear instructions, grounding reference text, steps, examples, and format.</p>
+
+      <div class="card" style="--bar:#10A37F">
+        <span class="label">Role <span class="opt">optional</span></span>
+        <p class="hint">A persona / system role for the model to adopt.</p>
+        <div class="fields"><label class="field"><span class="k">You are…</span><input type="text" data-field="role" placeholder="e.g. an expert financial copywriter who explains things simply"></label></div>
+      </div>
+
+      <div class="card" style="--bar:#19C37D">
+        <span class="label">Task</span>
+        <p class="hint">A clear, specific instruction — lead with a verb.</p>
+        <div class="fields"><label class="field"><span class="k">What should ChatGPT do?</span><textarea data-field="task" placeholder="e.g. Write a 200-word welcome email for new users of our budgeting app"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#0EA5A5">
+        <span class="label">Context &amp; audience</span>
+        <p class="hint">Background and who the output is for.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Audience</span><input type="text" data-field="audience" placeholder="e.g. first-time users, not finance-savvy"></label>
+          <label class="field"><span class="k">Background / purpose</span><textarea data-field="context" placeholder="e.g. We just launched; goal is to drive bank-account connection in week one"></textarea></label>
+        </div>
+      </div>
+
+      <div class="card" style="--bar:#6E6E80">
+        <span class="label">Reference text <span class="opt">optional</span></span>
+        <p class="hint">Source material to ground the answer in — the model is told to say so if the answer isn't in it. Paste text or upload files.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Paste reference text (optional)</span><textarea data-field="source" placeholder="Paste the source ChatGPT should rely on"></textarea></label>
+          <div class="file-rows"></div>
+          <div class="file-actions">
+            <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
+            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="--bar:#14B8A6">
+        <span class="label">Steps <span class="opt">optional</span></span>
+        <p class="hint">Break a complex task into an ordered sequence — helps the model reason it through.</p>
+        <div class="fields"><label class="field"><span class="k">Steps to follow</span><textarea data-field="steps" placeholder="1. …&#10;2. …&#10;3. …"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#047857">
+        <span class="label">Examples <span class="opt">optional</span></span>
+        <p class="hint">Few-shot examples of the output you want.</p>
+        <div class="fields"><label class="field"><span class="k">Example output(s)</span><textarea data-field="examples" placeholder="Example 1: …&#10;Example 2: …"></textarea></label></div>
+      </div>
+
+      <div class="card" style="--bar:#374151">
+        <span class="label">Output format</span>
+        <p class="hint">Structure, length, and tone of the response.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Output format</span><input type="text" data-field="format" placeholder="e.g. a numbered list / JSON / a 200-word email"></label>
+          <label class="field"><span class="k">Length / constraints</span><input type="text" data-field="length" placeholder="e.g. under 150 words"></label>
+          <label class="field"><span class="k">Tone / voice</span><input type="text" data-field="tone" placeholder="e.g. warm, professional, no jargon"></label>
+        </div>
+      </div>
+
+      <div class="card output-card">
+        <span class="label">✦ Your assembled prompt</span>
+        <p class="hint">Updates live as you type.</p>
+        <div class="gen-output"><span class="placeholder">Start filling in the fields above…</span></div>
+      </div>
+      <div class="toolbar"><button class="act reset">Reset</button><button class="act copy">Copy prompt</button></div>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+  /* ---------------- Prompt builders ---------------- */
+  function buildClaude(v, files) {
+    const L = [];
+    if (v.goal || v.who || v.enables || v.task) {
+      if (v.goal || v.who) L.push(`I'm working on ${v.goal || "[larger goal]"} for ${v.who || "[who it's for]"}.`);
+      if (v.enables) L.push(`They need ${v.enables}.`);
+      if (v.task) L.push(`With that in mind: ${v.task}`);
+      L.push("");
+    }
+    if (files.length) {
+      L.push("First, read these files completely before responding:");
+      files.forEach(f => L.push(f.desc ? `${f.path} — ${f.desc}` : f.path));
+      if (files.some(f => f.uploaded)) { L.push(""); L.push("Some of these are file names without a full path — search my machine for each by name and read the matching file. If you find more than one match, ask me which one I mean before proceeding."); }
+      L.push("");
+    }
+    if (v.reference) { L.push("Here is a reference for what I want to achieve:"); L.push(v.reference); L.push(""); }
+    L.push(`This is a ${v.effort || "routine"} problem.`);
+    L.push("Don't undersell yourself — scope it like it's at the top of your range.");
+    L.push("");
+    L.push("When you have enough information to act, act.");
+    L.push(v.decided ? `Don't re-derive what's established (${v.decided}), re-litigate my decisions, or survey options you won't pursue.` : "Don't re-derive what's established, re-litigate my decisions, or survey options you won't pursue.");
+    L.push("Weighing a choice? Give a recommendation.");
+    L.push("");
+    L.push("Do the simplest thing that works well.");
+    L.push("No extra features, refactors, or abstractions.");
+    L.push("No error handling for scenarios that can't happen.");
+    if (v.scope) L.push(`Constraints: ${v.scope}`);
+    L.push("If I'm describing a problem, the deliverable is your assessment.");
+    L.push("");
+    L.push("Split independent subtasks across subagents & keep working.");
+    L.push(`Verify with a fresh-context subagent against the spec ${v.interval || "regularly"}.`);
+    L.push("");
+    L.push("Before reporting progress, audit every claim against a tool result from this session. Unverified? Say so. Tests failed? Show the output.");
+    L.push("");
+    L.push(`Record lessons in ${v.notes || "[notes file]"} — one per file, with a one-line summary. Update, don't duplicate. Delete what turns out wrong.`);
+    L.push("");
+    L.push("Pause only for: destructive actions, real scope changes, or input only I can provide. Otherwise, proceed end to end. Never end your turn on a promise.");
+    L.push("");
+    L.push("Open with the outcome — the TLDR I'd ask for. Complete sentences, no arrow chains, no shorthand I never saw. Clear beats short.");
+    return L.join("\n").trim();
+  }
+
+  function buildGemini(v, files) {
+    const L = [];
+    if (v.persona) { L.push(`You are ${v.persona}.`); L.push(""); }
+    if (v.task) { L.push(v.task); L.push(""); }
+    if (v.audience || v.context) {
+      const c = [];
+      if (v.audience) c.push(`The audience is ${v.audience}.`);
+      if (v.context) c.push(v.context);
+      L.push("Context: " + c.join(" ")); L.push("");
+    }
+    if (v.source) { L.push("Work from this source material:"); L.push('"""'); L.push(v.source); L.push('"""'); L.push(""); }
+    if (files.length) {
+      L.push("Also use these files:");
+      files.forEach(f => L.push(f.desc ? `- ${f.path} — ${f.desc}` : `- ${f.path}`));
+      if (files.some(f => f.uploaded)) L.push("Some of these are file names without a full path — locate each on my machine by searching for it by name and read the matching file. If more than one matches, ask me which I mean.");
+      L.push("");
+    }
+    if (v.examples) { L.push("Here are examples of the kind of output I want:"); L.push(v.examples); L.push(""); }
+    const f = [];
+    if (v.format) f.push(`Format the response as ${v.format}.`);
+    if (v.tone) f.push(`Use a ${v.tone} tone.`);
+    if (v.length) f.push(`Constraints: ${v.length}.`);
+    if (f.length) L.push(f.join(" "));
+    return L.join("\n").trim();
+  }
+
+  function buildChatGPT(v, files) {
+    const L = [];
+    if (v.role) { L.push(`You are ${v.role}.`); L.push(""); }
+    if (v.task) { L.push(v.task); L.push(""); }
+    if (v.audience || v.context) {
+      const c = [];
+      if (v.audience) c.push(`The audience is ${v.audience}.`);
+      if (v.context) c.push(v.context);
+      L.push("Context: " + c.join(" ")); L.push("");
+    }
+    if (v.source) {
+      L.push("Use the following reference text to ground your answer. If the answer isn't contained in it, say so rather than guessing.");
+      L.push('"""'); L.push(v.source); L.push('"""'); L.push("");
+    }
+    if (files.length) {
+      L.push("Reference files:");
+      files.forEach(f => L.push(f.desc ? `- ${f.path} — ${f.desc}` : `- ${f.path}`));
+      if (files.some(f => f.uploaded)) L.push("Some of these are file names without a full path — locate each on my machine by searching for it by name. If more than one matches, ask which I mean.");
+      L.push("");
+    }
+    if (v.steps) { L.push("Work through the task in these steps:"); L.push(v.steps); L.push(""); }
+    if (v.examples) { L.push("Here are examples of the output I want:"); L.push(v.examples); L.push(""); }
+    const f = [];
+    if (v.format) f.push(`Format the response as ${v.format}.`);
+    if (v.length) f.push(`Length: ${v.length}.`);
+    if (v.tone) f.push(`Use a ${v.tone} tone.`);
+    if (f.length) L.push(f.join(" "));
+    return L.join("\n").trim();
+  }
+
+  const BUILDERS = { claude: buildClaude, gemini: buildGemini, chatgpt: buildChatGPT };
+
+  /* ---------------- Generic generator wiring ---------------- */
+  const toastEl = document.getElementById("toast");
+  function toast(msg) {
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastEl._t); toastEl._t = setTimeout(() => toastEl.classList.remove("show"), 1600);
+  }
+
+  function panelFiles(panel) {
+    const fr = panel.querySelector(".file-rows");
+    if (!fr) return [];
+    return [...fr.querySelectorAll(".file-row")].map(row => ({
+      path: row.querySelector(".path").value.trim(),
+      desc: row.querySelector(".desc").value.trim(),
+      uploaded: row.dataset.uploaded === "1"
+    })).filter(f => f.path || f.desc);
+  }
+  function readValues(panel) {
+    const v = {};
+    panel.querySelectorAll("[data-field]").forEach(e => v[e.dataset.field] = (e.value || "").trim());
+    return v;
+  }
+  function renderPanel(panel) {
+    const out = panel.querySelector(".gen-output");
+    const v = readValues(panel);
+    const files = panelFiles(panel);
+    const filled = Object.entries(v).some(([k, val]) => val && k !== "effort") || files.length > 0;
+    if (!filled) { out.innerHTML = '<span class="placeholder">Start filling in the fields above…</span>'; out.dataset.text = ""; return; }
+    const text = BUILDERS[panel.dataset.prefix](v, files);
+    out.textContent = text; out.dataset.text = text;
+  }
+  function refreshEmptyNote(fr) {
+    const rows = fr.querySelectorAll(".file-row").length;
+    let note = fr.querySelector(".empty-note");
+    if (rows === 0 && !note) { note = document.createElement("p"); note.className = "empty-note"; note.textContent = "No files yet — upload some or add a row."; fr.appendChild(note); }
+    else if (rows > 0 && note) note.remove();
+  }
+  function addFileRow(fr, panel, path = "", desc = "", uploaded = false) {
+    const note = fr.querySelector(".empty-note"); if (note) note.remove();
+    const row = document.createElement("div");
+    row.className = "file-row"; if (uploaded) row.dataset.uploaded = "1";
+    row.innerHTML = '<input type="text" class="path" placeholder="path/to/file"><input type="text" class="desc" placeholder="what it contains"><button type="button" class="rm" title="Remove">×</button>';
+    row.querySelector(".path").value = path; row.querySelector(".desc").value = desc;
+    row.querySelector(".path").addEventListener("input", () => renderPanel(panel));
+    row.querySelector(".desc").addEventListener("input", () => renderPanel(panel));
+    row.querySelector(".rm").addEventListener("click", () => { row.remove(); refreshEmptyNote(fr); renderPanel(panel); });
+    fr.appendChild(row);
+  }
+
+  document.querySelectorAll(".panel[data-prefix]").forEach(panel => {
+    panel.querySelectorAll("[data-field]").forEach(e => e.addEventListener("input", () => renderPanel(panel)));
+    const fr = panel.querySelector(".file-rows");
+    if (fr) {
+      panel.querySelector(".add-row").addEventListener("click", () => { addFileRow(fr, panel); renderPanel(panel); });
+      panel.querySelector(".file-upload").addEventListener("change", e => {
+        [...e.target.files].forEach(f => addFileRow(fr, panel, f.name, "", true));
+        e.target.value = ""; renderPanel(panel);
+      });
+      refreshEmptyNote(fr);
+    }
+    panel.querySelector(".copy").addEventListener("click", async () => {
+      const text = panel.querySelector(".gen-output").dataset.text || "";
+      if (!text) { toast("Nothing to copy yet"); return; }
+      try { await navigator.clipboard.writeText(text); toast("Copied to clipboard ✓"); }
+      catch { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("Copied to clipboard ✓"); }
+    });
+    panel.querySelector(".reset").addEventListener("click", () => {
+      panel.querySelectorAll("[data-field]").forEach(e => { if (e.tagName === "SELECT") e.selectedIndex = 0; else e.value = ""; });
+      if (fr) { fr.innerHTML = ""; refreshEmptyNote(fr); }
+      renderPanel(panel); toast("Cleared");
+    });
+    renderPanel(panel);
+  });
+
+  /* ---------------- Tab router ---------------- */
+  const TABS = ["home", "claude", "gemini", "chatgpt"];
+  function showTab(name) {
+    if (!TABS.includes(name)) name = "home";
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+    document.querySelectorAll(".view").forEach(v => v.classList.toggle("show", v.dataset.view === name));
+    if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("[data-tab]").forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
+  document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => showTab(b.dataset.goto)));
+  window.addEventListener("hashchange", () => showTab((location.hash || "#home").slice(1)));
+  showTab((location.hash || "#home").slice(1));
+</script>
+</body>
+</html>
