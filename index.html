@@ -69,6 +69,11 @@
   .tab[data-tab="claude"].active { color: var(--claude); border-color: var(--claude); }
   .tab[data-tab="gemini"].active { color: var(--gemini); border-color: var(--gemini); }
   .tab[data-tab="chatgpt"].active { color: var(--chatgpt); border-color: var(--chatgpt); }
+  a.feedback {
+    margin-left: auto; text-decoration: none; font-size: 14px; font-weight: 600; color: var(--muted);
+    padding: 8px 14px; border: 1px solid var(--line); border-radius: 9px;
+  }
+  a.feedback:hover { background: #eef0f3; color: var(--ink); }
 
   /* ---------- Views ---------- */
   .wrap { max-width: 840px; margin: 0 auto; padding: 30px 16px 90px; }
@@ -89,13 +94,31 @@
     background: linear-gradient(90deg, var(--gemini), #9334E6, #D96570);
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .view[data-view="chatgpt"] .vhead .glyph { color: var(--chatgpt); }
-  .view[data-view="chatgpt"] .vhead h1 { color: #0d8a6a; }
-
   /* per-view accent for buttons/uploads */
   .view[data-view="claude"]  { --accent: var(--claude);  --grad: #d9694a; }
   .view[data-view="gemini"]  { --accent: var(--gemini);  --grad: linear-gradient(120deg,#4285F4,#9334E6,#D96570); }
-  .view[data-view="chatgpt"] { --accent: var(--chatgpt); --grad: linear-gradient(120deg,#10A37F,#19C37D); }
+
+  /* ChatGPT — OpenAI design language: near-black actions, one restrained green, light answer panel */
+  .view[data-view="chatgpt"] {
+    --accent: #10a37f;
+    --grad: #0d0d0d;
+    font-family: "Söhne", "Inter", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  .view[data-view="chatgpt"] .vhead h1 { color: #0d0d0d; font-weight: 600; letter-spacing: -0.3px; }
+  .view[data-view="chatgpt"] .vhead .glyph { color: #10a37f; }
+  .view[data-view="chatgpt"] .vsub { color: #6e6e80; }
+  .view[data-view="chatgpt"] .card { --bar: #10a37f !important; border-color: #ececf1; }
+  .view[data-view="chatgpt"] .card .label { color: #0d0d0d; font-weight: 600; }
+  .view[data-view="chatgpt"] .card .hint { color: #6e6e80; }
+  .view[data-view="chatgpt"] label.field .k { color: #6e6e80; }
+  .view[data-view="chatgpt"] .copy { background: #0d0d0d; color: #fff; }
+  .view[data-view="chatgpt"] .upload-btn { background: #0d0d0d; }
+  .view[data-view="chatgpt"] .output-card { background: #f7f7f8; border: 1px solid #ececf1; }
+  .view[data-view="chatgpt"] .output-card::before { background: #10a37f; }
+  .view[data-view="chatgpt"] .output-card .label { color: #0d0d0d; }
+  .view[data-view="chatgpt"] .output-card .hint { color: #6e6e80; }
+  .view[data-view="chatgpt"] .gen-output { background: #fff; color: #0d0d0d; border: 1px solid #ececf1; }
+  .view[data-view="chatgpt"] .gen-output .placeholder { color: #8e8ea0; }
 
   /* ---------- Cards ---------- */
   .card {
@@ -145,6 +168,10 @@
   }
   .add-row { padding: 11px 18px; }
   .empty-note { color: var(--muted); font-size: 13.5px; font-style: italic; margin: 0 0 10px; }
+  .check-row { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .check-row input { width: 18px; height: 18px; margin-top: 1px; accent-color: var(--accent); flex: 0 0 auto; }
+  .check-row .ct { font-size: 14.5px; color: #3c3c40; }
+  .check-row code { background: #f1f1f3; border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
 
   /* ---------- Output ---------- */
   .output-card { background: #16171c; border: none; }
@@ -206,6 +233,7 @@
   <button class="tab" data-tab="claude">Claude</button>
   <button class="tab" data-tab="gemini">Gemini</button>
   <button class="tab" data-tab="chatgpt">ChatGPT</button>
+  <a class="feedback" id="feedbackLink" target="_blank" rel="noopener">💬 Feedback</a>
 </nav>
 
 <div class="wrap">
@@ -220,9 +248,9 @@
 
     <div class="tool-grid">
       <div class="tool" style="--tc: var(--claude)" data-goto="claude">
-        <div class="frame">Anatomy-of-a-prompt</div>
+        <div class="frame">Role · Context · Examples · Format</div>
         <h3><span class="dot"></span> Claude</h3>
-        <p>A 10-part operating brief — task, context files, scope, delegation, evidence, and how you want the report. Built for agentic, hands-on work.</p>
+        <p>Anthropic's official prompt structure — a clear role, XML-tagged context and documents, examples, optional chain-of-thought, and explicit output formatting.</p>
         <div class="open">Open Claude builder →</div>
       </div>
       <div class="tool" style="--tc: var(--gemini)" data-goto="gemini">
@@ -264,23 +292,22 @@
   <section class="view" data-view="claude">
     <div class="panel" data-prefix="claude">
       <div class="vhead"><span class="glyph">✳</span><h1>Claude Prompt Generator</h1></div>
-      <p class="vsub">The anatomy of a Claude prompt — fill in each section, then copy the assembled brief.</p>
+      <p class="vsub">Structured around Anthropic's official prompt-engineering guidance — a clear role, XML-tagged context and documents, examples, optional chain-of-thought, and explicit output formatting.</p>
 
       <div class="card" style="--bar:#e8533a">
-        <span class="label">Task</span>
-        <p class="hint">What you're working on, who it's for, and the specific ask.</p>
+        <span class="label">Role &amp; tone</span>
+        <p class="hint">Give Claude a role via the system framing, and optionally set the tone. (Anthropic: assign a role; it sharpens responses.)</p>
         <div class="fields">
-          <label class="field"><span class="k">Larger goal</span><input type="text" data-field="goal" placeholder="e.g. shipping an onboarding flow"></label>
-          <label class="field"><span class="k">Who it's for</span><input type="text" data-field="who" placeholder="e.g. first-time mobile users"></label>
-          <label class="field"><span class="k">What the output enables</span><input type="text" data-field="enables" placeholder="e.g. a working signup screen they can test"></label>
-          <label class="field"><span class="k">The task</span><textarea data-field="task" placeholder="e.g. build the signup form with validation"></textarea></label>
+          <label class="field"><span class="k">You are…</span><input type="text" data-field="role" placeholder="e.g. a senior backend engineer reviewing a pull request"></label>
+          <label class="field"><span class="k">Tone <span style="text-transform:none;font-weight:400">(optional)</span></span><input type="text" data-field="tone" placeholder="e.g. direct and concise"></label>
         </div>
       </div>
 
       <div class="card" style="--bar:#4ca3d8">
-        <span class="label">Context Files</span>
-        <p class="hint">Files to read completely before responding. Upload to grab names, then edit the path and say what each contains.</p>
+        <span class="label">Background &amp; documents <span class="opt">optional</span></span>
+        <p class="hint">Context and any source material. Long documents go near the top, wrapped in XML tags — Anthropic's signature practice. Paste text or attach files.</p>
         <div class="fields">
+          <label class="field"><span class="k">Background / context</span><textarea data-field="background" placeholder="e.g. We're migrating an Express API to Fastify; this endpoint handles auth"></textarea></label>
           <div class="file-rows"></div>
           <div class="file-actions">
             <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
@@ -290,55 +317,38 @@
       </div>
 
       <div class="card" style="--bar:#2bb583">
-        <span class="label">Reference</span>
-        <p class="hint">A reference for what you want to achieve.</p>
-        <div class="fields"><label class="field"><span class="k">Reference (paste or describe)</span><textarea data-field="reference" placeholder="Paste a reference example, or describe the target"></textarea></label></div>
+        <span class="label">Instructions &amp; rules</span>
+        <p class="hint">Be clear and direct: spell out exactly what to do, plus any rules or constraints.</p>
+        <div class="fields"><label class="field"><span class="k">What Claude should do</span><textarea data-field="instructions" placeholder="e.g. Review the diff for correctness bugs only. Don't suggest style changes. Flag anything that could break auth."></textarea></label></div>
       </div>
 
       <div class="card" style="--bar:#e8b53a">
-        <span class="label">Effort</span>
-        <p class="hint">Scope it like it's at the top of your range — don't undersell.</p>
-        <div class="fields"><label class="field"><span class="k">Difficulty</span>
-          <select data-field="effort"><option value="routine">Routine</option><option value="hard">Hard</option><option value="hardest-unsolved">Hardest-unsolved</option></select></label></div>
+        <span class="label">Examples <span class="opt">optional</span></span>
+        <p class="hint">Show 1–3 examples of the response you want (multishot). Anthropic: examples are among the most effective tools for steering Claude.</p>
+        <div class="fields"><label class="field"><span class="k">Example input/output pair(s)</span><textarea data-field="examples" placeholder="Input: …&#10;Output: …"></textarea></label></div>
       </div>
 
       <div class="card" style="--bar:#f2a9b8">
-        <span class="label">Act</span>
-        <p class="hint">When you have enough info to act, act. Don't re-litigate decisions or survey options you won't pursue.</p>
-        <div class="fields"><label class="field"><span class="k">Decisions already made (don't re-derive)</span><textarea data-field="decided" placeholder="e.g. we're using React + Tailwind; auth is already built"></textarea></label></div>
+        <span class="label">The request</span>
+        <p class="hint">The immediate, specific ask — what you want Claude to do right now.</p>
+        <div class="fields"><label class="field"><span class="k">Your request</span><textarea data-field="request" placeholder="e.g. Now review the diff below and list any correctness bugs."></textarea></label></div>
       </div>
 
       <div class="card" style="--bar:#b58fe0">
-        <span class="label">Scope</span>
-        <p class="hint">Do the simplest thing that works well. No extra features, refactors, or abstractions.</p>
-        <div class="fields"><label class="field"><span class="k">Constraints / out of scope</span><textarea data-field="scope" placeholder="e.g. no new dependencies; don't touch the styling"></textarea></label></div>
+        <span class="label">Let Claude think <span class="opt">optional</span></span>
+        <p class="hint">For complex reasoning, ask Claude to think step by step before answering (chain-of-thought, in &lt;thinking&gt; tags).</p>
+        <div class="fields">
+          <label class="check-row"><input type="checkbox" data-field="think"><span class="ct">Add a chain-of-thought instruction (think step by step in <code>&lt;thinking&gt;</code> tags before the final answer).</span></label>
+        </div>
       </div>
 
       <div class="card" style="--bar:#e8533a">
-        <span class="label">Delegate</span>
-        <p class="hint">Split independent subtasks across subagents. Verify with a fresh-context subagent against the spec.</p>
-        <div class="fields"><label class="field"><span class="k">Verify interval</span><input type="text" data-field="interval" placeholder="e.g. every major milestone"></label></div>
-      </div>
-
-      <div class="card" style="--bar:#4ca3d8">
-        <span class="label">Evidence</span>
-        <p class="hint">Before reporting progress, audit every claim against a tool result. Unverified? Say so. (Always included.)</p>
-      </div>
-
-      <div class="card" style="--bar:#2bb583">
-        <span class="label">Memory</span>
-        <p class="hint">Record lessons — one per file, one-line summary. Update, don't duplicate.</p>
-        <div class="fields"><label class="field"><span class="k">Notes file</span><input type="text" data-field="notes" placeholder="e.g. notes.md"></label></div>
-      </div>
-
-      <div class="card" style="--bar:#e8b53a">
-        <span class="label">Checkpoint</span>
-        <p class="hint">Pause only for: destructive actions, real scope changes, or input only you can provide. (Always included.)</p>
-      </div>
-
-      <div class="card" style="--bar:#f2a9b8">
-        <span class="label">Report</span>
-        <p class="hint">Open with the outcome — the TLDR. Complete sentences. Clear beats short. (Always included.)</p>
+        <span class="label">Output format</span>
+        <p class="hint">Tell Claude exactly how to shape the answer. Optionally prefill the first words of its reply to lock the format.</p>
+        <div class="fields">
+          <label class="field"><span class="k">Desired format</span><input type="text" data-field="format" placeholder="e.g. a markdown table with columns: line, issue, severity"></label>
+          <label class="field"><span class="k">Prefill Claude's reply <span style="text-transform:none;font-weight:400">(optional)</span></span><input type="text" data-field="prefill" placeholder="e.g. | Line | Issue | Severity |"></label>
+        </div>
       </div>
 
       <div class="card output-card">
@@ -491,46 +501,53 @@
 <div class="toast" id="toast">Copied</div>
 
 <script>
+  /* ====== Feedback form link — paste your Google Form URL here ====== */
+  const FEEDBACK_URL = "https://forms.gle/76eZQcVvq9TW5BxQ9";
+  document.getElementById("feedbackLink").href = FEEDBACK_URL;
+
   /* ---------------- Prompt builders ---------------- */
   function buildClaude(v, files) {
     const L = [];
-    if (v.goal || v.who || v.enables || v.task) {
-      if (v.goal || v.who) L.push(`I'm working on ${v.goal || "[larger goal]"} for ${v.who || "[who it's for]"}.`);
-      if (v.enables) L.push(`They need ${v.enables}.`);
-      if (v.task) L.push(`With that in mind: ${v.task}`);
-      L.push("");
-    }
+    // 1 & 2 — Role + tone (task context)
+    const intro = [];
+    if (v.role) intro.push(`You are ${v.role}.`);
+    if (v.tone) intro.push(`Maintain a ${v.tone} tone throughout.`);
+    if (intro.length) { L.push(intro.join(" ")); L.push(""); }
+
+    // 3 — Background & documents (in XML tags, near the top)
+    if (v.background) { L.push("<background>"); L.push(v.background); L.push("</background>"); L.push(""); }
     if (files.length) {
-      L.push("First, read these files completely before responding:");
-      files.forEach(f => L.push(f.desc ? `${f.path} — ${f.desc}` : f.path));
-      if (files.some(f => f.uploaded)) { L.push(""); L.push("Some of these are file names without a full path — search my machine for each by name and read the matching file. If you find more than one match, ask me which one I mean before proceeding."); }
+      L.push("<documents>");
+      files.forEach(f => {
+        L.push("  <document>");
+        L.push(`    <source>${f.path}</source>`);
+        if (f.desc) L.push(`    <description>${f.desc}</description>`);
+        L.push("  </document>");
+      });
+      L.push("</documents>");
+      if (files.some(f => f.uploaded)) L.push("Note: some sources above are file names without a full path — locate each on my machine by searching for it by name and read its contents. If more than one matches, ask me which I mean.");
       L.push("");
     }
-    if (v.reference) { L.push("Here is a reference for what I want to achieve:"); L.push(v.reference); L.push(""); }
-    L.push(`This is a ${v.effort || "routine"} problem.`);
-    L.push("Don't undersell yourself — scope it like it's at the top of your range.");
-    L.push("");
-    L.push("When you have enough information to act, act.");
-    L.push(v.decided ? `Don't re-derive what's established (${v.decided}), re-litigate my decisions, or survey options you won't pursue.` : "Don't re-derive what's established, re-litigate my decisions, or survey options you won't pursue.");
-    L.push("Weighing a choice? Give a recommendation.");
-    L.push("");
-    L.push("Do the simplest thing that works well.");
-    L.push("No extra features, refactors, or abstractions.");
-    L.push("No error handling for scenarios that can't happen.");
-    if (v.scope) L.push(`Constraints: ${v.scope}`);
-    L.push("If I'm describing a problem, the deliverable is your assessment.");
-    L.push("");
-    L.push("Split independent subtasks across subagents & keep working.");
-    L.push(`Verify with a fresh-context subagent against the spec ${v.interval || "regularly"}.`);
-    L.push("");
-    L.push("Before reporting progress, audit every claim against a tool result from this session. Unverified? Say so. Tests failed? Show the output.");
-    L.push("");
-    L.push(`Record lessons in ${v.notes || "[notes file]"} — one per file, with a one-line summary. Update, don't duplicate. Delete what turns out wrong.`);
-    L.push("");
-    L.push("Pause only for: destructive actions, real scope changes, or input only I can provide. Otherwise, proceed end to end. Never end your turn on a promise.");
-    L.push("");
-    L.push("Open with the outcome — the TLDR I'd ask for. Complete sentences, no arrow chains, no shorthand I never saw. Clear beats short.");
-    return L.join("\n").trim();
+
+    // 4 — Detailed instructions & rules
+    if (v.instructions) { L.push("Here are your instructions:"); L.push("<instructions>"); L.push(v.instructions); L.push("</instructions>"); L.push(""); }
+
+    // 5 — Examples (multishot, in XML tags)
+    if (v.examples) { L.push("Here are examples of the kind of response I'm looking for:"); L.push("<examples>"); L.push(v.examples); L.push("</examples>"); L.push(""); }
+
+    // 7 — The immediate request
+    if (v.request) { L.push(v.request); L.push(""); }
+
+    // 8 — Think step by step (chain-of-thought)
+    if (v.think) { L.push("Before you answer, think through the problem step by step inside <thinking></thinking> tags. Then give your final answer."); L.push(""); }
+
+    // 9 — Output formatting
+    if (v.format) { L.push(`Format your response as ${v.format}.`); L.push(""); }
+
+    // 10 — Prefilled response
+    let out = L.join("\n").trim();
+    if (v.prefill) out += `\n\nBegin your response with:\n${v.prefill}`;
+    return out;
   }
 
   function buildGemini(v, files) {
@@ -609,14 +626,16 @@
   }
   function readValues(panel) {
     const v = {};
-    panel.querySelectorAll("[data-field]").forEach(e => v[e.dataset.field] = (e.value || "").trim());
+    panel.querySelectorAll("[data-field]").forEach(e => {
+      v[e.dataset.field] = e.type === "checkbox" ? e.checked : (e.value || "").trim();
+    });
     return v;
   }
   function renderPanel(panel) {
     const out = panel.querySelector(".gen-output");
     const v = readValues(panel);
     const files = panelFiles(panel);
-    const filled = Object.entries(v).some(([k, val]) => val && k !== "effort") || files.length > 0;
+    const filled = Object.values(v).some(val => typeof val === "string" && val) || files.length > 0;
     if (!filled) { out.innerHTML = '<span class="placeholder">Start filling in the fields above…</span>'; out.dataset.text = ""; return; }
     const text = BUILDERS[panel.dataset.prefix](v, files);
     out.textContent = text; out.dataset.text = text;
@@ -640,7 +659,10 @@
   }
 
   document.querySelectorAll(".panel[data-prefix]").forEach(panel => {
-    panel.querySelectorAll("[data-field]").forEach(e => e.addEventListener("input", () => renderPanel(panel)));
+    panel.querySelectorAll("[data-field]").forEach(e => {
+      e.addEventListener("input", () => renderPanel(panel));
+      e.addEventListener("change", () => renderPanel(panel));
+    });
     const fr = panel.querySelector(".file-rows");
     if (fr) {
       panel.querySelector(".add-row").addEventListener("click", () => { addFileRow(fr, panel); renderPanel(panel); });
@@ -657,7 +679,7 @@
       catch { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("Copied to clipboard ✓"); }
     });
     panel.querySelector(".reset").addEventListener("click", () => {
-      panel.querySelectorAll("[data-field]").forEach(e => { if (e.tagName === "SELECT") e.selectedIndex = 0; else e.value = ""; });
+      panel.querySelectorAll("[data-field]").forEach(e => { if (e.type === "checkbox") e.checked = false; else if (e.tagName === "SELECT") e.selectedIndex = 0; else e.value = ""; });
       if (fr) { fr.innerHTML = ""; refreshEmptyNote(fr); }
       renderPanel(panel); toast("Cleared");
     });

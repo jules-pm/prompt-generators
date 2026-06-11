@@ -4,7 +4,7 @@ A single-page, no-dependency web app with three guided prompt builders — **Cla
 
 ## The three builders
 
-- **Claude** — the "anatomy of a Claude prompt": a 10-part operating brief covering task, context files, reference, effort, scope, delegation, evidence, memory, checkpoints, and report style. Built for agentic, hands-on work.
+- **Claude** — Anthropic's official prompt structure: a clear role, XML-tagged background and documents, detailed instructions, multishot examples, optional chain-of-thought, explicit output formatting, and response prefill.
 - **Gemini** — Google's recommended **Persona · Task · Context · Format** framework, written conversationally, plus reference material and few-shot examples.
 - **ChatGPT** — OpenAI's guidance: clear instructions, grounding **reference text**, step-by-step breakdown, few-shot examples, and a specified output format.
 
