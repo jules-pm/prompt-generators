@@ -692,7 +692,7 @@
         format: "a brief with sections: Style, Color palette, Do's and Don'ts, and 5 Illustration concepts"
       },
       business: {
-        role: "the owner of a small neighborhood bar",
+        role: "the owner of a neighborhood bar and restaurant",
         tone: "lively and casual",
         background: "We're launching a weekly Thursday trivia night with a happy-hour special and want to fill seats.",
         instructions: "Write a short announcement email and one Instagram caption. Mention trivia every Thursday at 7pm and $5 happy-hour drinks until 8. Keep one clear call to action.",
@@ -736,7 +736,7 @@
         tone: "warm and creative"
       },
       business: {
-        persona: "the owner of a small neighborhood bar",
+        persona: "the owner of a neighborhood bar and restaurant",
         task: "Write an announcement email and an Instagram caption for our new weekly Thursday trivia night with a happy-hour special",
         audience: "local regulars and nearby neighbors",
         context: "Trivia every Thursday at 7pm; $5 happy-hour drinks until 8. Keep it lively with one clear call to action.",
@@ -782,7 +782,7 @@
         tone: "warm and creative"
       },
       business: {
-        role: "the owner of a small neighborhood bar",
+        role: "the owner of a neighborhood bar and restaurant",
         task: "Write an announcement email and an Instagram caption for our new weekly Thursday trivia night with a happy-hour special",
         audience: "local regulars and nearby neighbors",
         context: "Trivia every Thursday at 7pm; $5 happy-hour drinks until 8. Lively, one clear call to action.",
@@ -820,7 +820,7 @@
       }
     }
   };
-  const EX_ORDER = [["designer","Designer"],["business","Bar owner"],["comms","Comms director"],["pm","Product manager"],["admin","HR admin"]];
+  const EX_ORDER = [["designer","Designer"],["business","Business owner"],["comms","Comms director"],["pm","Product manager"],["admin","HR admin"]];
   function applyPreset(panel, preset) {
     panel.querySelectorAll("[data-field]").forEach(e => { if (e.type === "checkbox") e.checked = false; else if (e.tagName === "SELECT") e.selectedIndex = 0; else e.value = ""; });
     const fr = panel.querySelector(".file-rows"); if (fr) { fr.innerHTML = ""; refreshEmptyNote(fr); }
