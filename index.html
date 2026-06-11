@@ -116,6 +116,8 @@
   .view[data-view="chatgpt"] .upload-btn { background: #0d0d0d; }
   /* assembled-prompt box matches Claude/Gemini (dark); just a green accent bar */
   .view[data-view="chatgpt"] .output-card::before { background: #10a37f; }
+  .view[data-view="chatgpt"] .output-card .label { color: #fff; }
+  .view[data-view="chatgpt"] .output-card .hint { color: #aeb3bd; }
 
   /* ---------- Cards ---------- */
   .card {
@@ -206,7 +208,7 @@
   /* ---------- Landing ---------- */
   .hero h1 { font-size: 38px; margin: 0 0 8px; letter-spacing: -0.6px; }
   .hero h1 .grad { background: linear-gradient(90deg, var(--claude), var(--gemini), var(--chatgpt)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-  .hero p.lead { font-size: 17px; color: #3c3c40; margin: 0 0 6px; max-width: 640px; }
+  .hero p.lead { font-size: 17px; color: #3c3c40; margin: 0 0 12px; max-width: 640px; }
   .hero p.byline { color: var(--muted); font-size: 14px; margin: 0 0 30px; }
   .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 34px; }
   .tool {
@@ -252,7 +254,8 @@
   <section class="view" data-view="home">
     <div class="hero">
       <h1>Better prompts for <span class="grad">every model</span></h1>
-      <p class="lead">A clear, well-structured prompt is the difference between a vague answer and exactly what you need — fewer do-overs, better results on the first try. These three guided builders — one each for Claude, Gemini, and ChatGPT — are shaped around every model's own prompting best practices. Fill in the fields, watch your prompt assemble live, and copy it out.</p>
+      <p class="lead">A clear, well-structured prompt is the difference between a vague answer and exactly what you need. Fewer do-overs, better results on the first try.</p>
+      <p class="lead">These three guided builders — one for Claude, Gemini, and ChatGPT — are shaped around every model's own prompting best practices. Fill in the fields, watch your prompt assemble live, and copy it out.</p>
       <p class="byline">by Jules</p>
     </div>
 
@@ -321,8 +324,8 @@
           <div class="file-rows"></div>
           <div class="file-actions">
             <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
-            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
             <span class="tip" tabindex="0" data-tip="Your files aren't uploaded to this site — only the file name is read. The prompt just references files by name, so depending on the model you may need to upload them again when you send it.">i</span>
+            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
           </div>
         </div>
       </div>
@@ -406,8 +409,8 @@
           <div class="file-rows"></div>
           <div class="file-actions">
             <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
-            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
             <span class="tip" tabindex="0" data-tip="Your files aren't uploaded to this site — only the file name is read. The prompt just references files by name, so depending on the model you may need to upload them again when you send it.">i</span>
+            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
           </div>
         </div>
       </div>
@@ -472,8 +475,8 @@
           <div class="file-rows"></div>
           <div class="file-actions">
             <label class="upload-btn">Upload files<input type="file" class="file-upload" multiple hidden></label>
-            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
             <span class="tip" tabindex="0" data-tip="Your files aren't uploaded to this site — only the file name is read. The prompt just references files by name, so depending on the model you may need to upload them again when you send it.">i</span>
+            <button type="button" class="act add-row" style="background:#fff;color:var(--ink);border:1px solid var(--line)">+ Add row manually</button>
           </div>
         </div>
       </div>
